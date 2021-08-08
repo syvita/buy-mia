@@ -37,6 +37,7 @@ export default function Home() {
   const { doContractCall } = syConnect();
 
   const NETWORK = new StacksMainnet();
+  const GENESIS_CONTRACT_ADDRESS = "SP000000000000000000002Q6VF78";
   const CONTRACT_ADDRESS = "SP343J7DNE122AVCSC4HEK4MF871PW470ZSXJ5K66";
   const CONTRACT_NAME = "buy-mia-v1";
 
@@ -68,9 +69,9 @@ export default function Home() {
       functionName: "get-price",
       functionArgs: [],
       network: NETWORK,
-      senderAddress: STXAddress,
+      senderAddress: GENESIS_CONTRACT_ADDRESS,
     });
-    return parseFloat(result.value.value) / 1000000;
+    return parseFloat(result.value.value);
   }
 
   async function getRemaining() {
@@ -80,7 +81,7 @@ export default function Home() {
       functionName: "get-remaining",
       functionArgs: [],
       network: NETWORK,
-      senderAddress: STXAddress,
+      senderAddress: GENESIS_CONTRACT_ADDRESS,
     });
     return parseInt(result.value.value);
   }
@@ -97,12 +98,21 @@ export default function Home() {
       )}
       <div>
         <img src="/eye.svg" height="14" width="14" alt="Eye"></img>
-        {price} STX/MIA | {remaining} MIA left
+        {price / 1000000} STX/MIA | {remaining} MIA left
       </div>
       {userSession.isUserSignedIn() && (
         <button onClick={buyMIA} className={styles.button}>
           Buy
         </button>
+      )}
+      {txId && (
+        <a
+          href={`https://explorer.stacks.co/txid/${txId}?chain=mainnet`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View in Explorer
+        </a>
       )}
       {!userSession.isUserSignedIn() && (
         <button className={styles.button} onClick={handleOpenAuth}>
