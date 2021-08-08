@@ -2,6 +2,8 @@
 [project]
 name = "contract"
 
-[contracts]
+[contracts.buy-mia]
+path = "contracts/buy-mia.clar"
+depends_on = []
 
 [notebooks]
