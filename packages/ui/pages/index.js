@@ -6,11 +6,10 @@ import { useEffect, useState } from "react";
 import { useConnect as syConnect } from "@syvita/connect-react";
 import {
   uintCV,
-  noneCV,
   makeStandardSTXPostCondition,
   PostConditionMode,
   FungibleConditionCode,
-  AnchorMode,
+  callReadOnlyFunction,
 } from "@syvita/transactions";
 
 export default function Home() {
@@ -23,7 +22,10 @@ export default function Home() {
   const [remaining, setRemaining] = useState();
   const [txId, setTxId] = useState();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getPrice().then((result) => setPrice(result));
+    getRemaining().then((result) => setRemaining(result));
+  }, []);
 
   let STXAddress = "";
 
@@ -49,7 +51,7 @@ export default function Home() {
         makeStandardSTXPostCondition(
           STXAddress,
           FungibleConditionCode.Equal,
-          uintCV(amount).value
+          uintCV(amount * price).value
         ),
       ],
       network: NETWORK,
@@ -68,7 +70,7 @@ export default function Home() {
       network: NETWORK,
       senderAddress: STXAddress,
     });
-    return parseInt(result.value);
+    return parseFloat(result.value.value) / 1000000;
   }
 
   async function getRemaining() {
@@ -80,7 +82,7 @@ export default function Home() {
       network: NETWORK,
       senderAddress: STXAddress,
     });
-    return parseInt(result.value);
+    return parseInt(result.value.value);
   }
 
   return (
@@ -94,8 +96,8 @@ export default function Home() {
         ></input>
       )}
       <div>
-        <img src="/eye.svg" height="14" width="14" alt="Eye"></img>0.015 STX/MIA
-        | 2,678,932 MIA left
+        <img src="/eye.svg" height="14" width="14" alt="Eye"></img>
+        {price} STX/MIA | {remaining} MIA left
       </div>
       {userSession.isUserSignedIn() && (
         <button onClick={buyMIA} className={styles.button}>
