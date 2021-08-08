@@ -1,45 +1,63 @@
 import styles from "../styles/Home.module.css";
-import { signIn, signOut, userSession } from "../lib/auth";
+import { useConnect, userSessionState } from "../lib/auth";
 import { useAtom } from "jotai";
+import { StacksMainnet, StacksTestnet } from "@stacks/network";
 import { useState } from "react";
-import { StacksTestnet } from "@stacks/network";
-// import { useConnect as syvConnect } from "@syvita/connect-react";
+import { useConnect as syConnect } from "@syvita/connect-react";
 import {
   uintCV,
-  PostConditionMode,
+  noneCV,
   makeStandardSTXPostCondition,
+  PostConditionMode,
   FungibleConditionCode,
+  AnchorMode,
 } from "@syvita/transactions";
 
 export default function Home() {
-  const CONTRACT_ADDRESS = "ST343J7DNE122AVCSC4HEK4MF871PW470ZV04CFXH";
-  const NETWORK = new StacksTestnet();
+  const { handleOpenAuth } = useConnect();
+  const { handleSignOut } = useConnect();
+  const [userSession] = useAtom(userSessionState);
 
   const [amount, setAmount] = useState();
   const [txId, setTxId] = useState();
 
-  console.log(userSession);
+  let STXAddress = "";
 
-  // const buyMia = async () => {
-  //   await doContractCall({
-  //     contractAddress: CONTRACT_ADDRESS,
-  //     contractName: "buy-mia",
-  //     functionName: "buy-mia",
-  //     functionArgs: [uintCV(amount)],
-  //     postConditionMode: PostConditionMode.Deny,
-  //     postConditions: [
-  //       makeStandardSTXPostCondition(
-  //         STXAddress,
-  //         FungibleConditionCode.Equal,
-  //         uintCV(amount).value
-  //       ),
-  //     ],
-  //     network: NETWORK,
-  //     onFinish: (result) => {
-  //       setTxId(result.txId);
-  //     },
-  //   });
-  // };
+  if (userSession.isUserSignedIn()) {
+    STXAddress = userSession.loadUserData().profile.stxAddress.mainnet;
+    console.log(STXAddress);
+  }
+
+  const { doContractCall } = syConnect();
+
+  const NETWORK = new StacksMainnet();
+  const CONTRACT_ADDRESS = "SP343J7DNE122AVCSC4HEK4MF871PW470ZSXJ5K66";
+  const CONTRACT_NAME = "buy-mia-v1";
+
+  async function buyMIA() {
+    await doContractCall({
+      contractAddress: CONTRACT_ADDRESS,
+      contractName: CONTRACT_NAME,
+      functionName: "buy-mia",
+      functionArgs: [uintCV(amount)],
+      postConditionMode: PostConditionMode.Deny,
+      postConditions: [
+        makeStandardSTXPostCondition(
+          STXAddress,
+          FungibleConditionCode.Equal,
+          uintCV(amount).value
+        ),
+      ],
+      network: NETWORK,
+      onFinish: (result) => {
+        setTxId(result.txId);
+        //addMinedBlocks(STXAddress, appPrivateKey, blockHeight);
+      },
+    });
+    // KV CALLS
+
+    // TEMP SOLUTION FOR ONFINISH TRAN ID
+  }
 
   return (
     <div className={styles.buy}>
@@ -56,16 +74,18 @@ export default function Home() {
         2,678,932 MIA left
       </div>
       {userSession.isUserSignedIn() && (
-        <button className={styles.button}>Buy</button>
+        <button onClick={buyMIA} className={styles.button}>
+          Buy
+        </button>
       )}
       {!userSession.isUserSignedIn() && (
-        <button className={styles.button} onClick={signIn}>
+        <button className={styles.button} onClick={handleOpenAuth}>
           Connect Wallet
         </button>
       )}
 
       {userSession.isUserSignedIn() && (
-        <button className={styles.signOut} onClick={signOut}>
+        <button className={styles.signOut} onClick={handleSignOut}>
           Sign Out
         </button>
       )}
