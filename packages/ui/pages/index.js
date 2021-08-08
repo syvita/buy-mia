@@ -2,7 +2,7 @@ import styles from "../styles/Home.module.css";
 import { useConnect, userSessionState } from "../lib/auth";
 import { useAtom } from "jotai";
 import { StacksMainnet, StacksTestnet } from "@stacks/network";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useConnect as syConnect } from "@syvita/connect-react";
 import {
   uintCV,
@@ -19,7 +19,11 @@ export default function Home() {
   const [userSession] = useAtom(userSessionState);
 
   const [amount, setAmount] = useState();
+  const [price, setPrice] = useState();
+  const [remaining, setRemaining] = useState();
   const [txId, setTxId] = useState();
+
+  useEffect(() => {}, []);
 
   let STXAddress = "";
 
@@ -51,17 +55,37 @@ export default function Home() {
       network: NETWORK,
       onFinish: (result) => {
         setTxId(result.txId);
-        //addMinedBlocks(STXAddress, appPrivateKey, blockHeight);
       },
     });
-    // KV CALLS
+  }
 
-    // TEMP SOLUTION FOR ONFINISH TRAN ID
+  async function getPrice() {
+    const result = await callReadOnlyFunction({
+      contractAddress: CONTRACT_ADDRESS,
+      contractName: CONTRACT_NAME,
+      functionName: "get-price",
+      functionArgs: [],
+      network: NETWORK,
+      senderAddress: STXAddress,
+    });
+    return parseInt(result.value);
+  }
+
+  async function getRemaining() {
+    const result = await callReadOnlyFunction({
+      contractAddress: CONTRACT_ADDRESS,
+      contractName: CONTRACT_NAME,
+      functionName: "get-remaining",
+      functionArgs: [],
+      network: NETWORK,
+      senderAddress: STXAddress,
+    });
+    return parseInt(result.value);
   }
 
   return (
     <div className={styles.buy}>
-      <img src="/mia.svg" height="64" width="64"></img>
+      <img src="/mia.svg" height="64" width="64" alt="MIA Logo"></img>
       <h1>Buy $MIA from Syvita</h1>
       {userSession.isUserSignedIn() && (
         <input
@@ -70,8 +94,8 @@ export default function Home() {
         ></input>
       )}
       <div>
-        <img src="/eye.svg" height="14" width="14"></img>0.015 STX/MIA |
-        2,678,932 MIA left
+        <img src="/eye.svg" height="14" width="14" alt="Eye"></img>0.015 STX/MIA
+        | 2,678,932 MIA left
       </div>
       {userSession.isUserSignedIn() && (
         <button onClick={buyMIA} className={styles.button}>
