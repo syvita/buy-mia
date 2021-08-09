@@ -235,3 +235,29 @@ Clarinet.test({
     );
   },
 });
+
+
+Clarinet.test({
+  name: "When price is changed to 0 buying tokens is impossible",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const { tokenClient, buyMiaClient } = createClients(chain, accounts);
+    const poolOwner = accounts.get("wallet_1")!;
+    const amount = 100000;
+    const newPrice = 0;
+    const user = accounts.get("wallet_2")!;
+    const buyAmount = 5000;
+    chain.mineBlock([
+      tokenClient.mint(amount, poolOwner),
+      buyMiaClient.sellMia(amount, poolOwner),
+      buyMiaClient.changePrice(newPrice, poolOwner),
+    ]);
+
+    // act
+    const receipt = chain.mineBlock([buyMiaClient.buyMia(buyAmount, user)])
+      .receipts[0];
+
+    // assert
+    receipt.result.expectErr().expectUint(3); //(err u3) = STX amount to send is non-positive
+    assertEquals(receipt.events.length, 0);
+  },
+});
