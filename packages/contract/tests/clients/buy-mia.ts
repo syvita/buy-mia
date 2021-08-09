@@ -7,6 +7,7 @@ enum Err {
 
 export class BuyMiaClient extends BaseClient {
   static Err = Err;
+  static DEFAULT_PRICE = 15000;
 
   sellMia(amount: number, sender: Account) {
     return Tx.contractCall(
@@ -21,6 +22,15 @@ export class BuyMiaClient extends BaseClient {
     return Tx.contractCall(
       this.contractName,
       "exit-mia",
+      [types.uint(amount)],
+      sender.address
+    );
+  }
+
+  buyMia(amount: number, sender: Account) {
+    return Tx.contractCall(
+      this.contractName,
+      "buy-mia",
       [types.uint(amount)],
       sender.address
     );

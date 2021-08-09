@@ -105,3 +105,60 @@ Clarinet.test({
     );
   },
 });
+
+Clarinet.test({
+  name: "Buying tokens fails with ERR_UNAUTHORIZED when called by POOL owner",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const { tokenClient, buyMiaClient } = createClients(chain, accounts);
+    const poolOwner = accounts.get("wallet_1")!;
+    const amount = 1023123;
+    chain.mineBlock([
+      tokenClient.mint(amount, poolOwner),
+      buyMiaClient.sellMia(amount, poolOwner),
+    ]);
+
+    // act
+    const receipt = chain.mineBlock([buyMiaClient.buyMia(amount, poolOwner)])
+      .receipts[0];
+
+    // assert
+    receipt.result.expectErr().expectUint(BuyMiaClient.Err.ERR_UNAUTHORIZED);
+    assertEquals(receipt.events.length, 0);
+  },
+});
+
+Clarinet.test({
+  name: "Buying tokens succeeds and cause one FT Transfer Event, and on STX event when called by someone who is not POOL owner.",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const { tokenClient, buyMiaClient } = createClients(chain, accounts);
+    const poolOwner = accounts.get("wallet_1")!;
+    const amount = 10000000;
+    const user = accounts.get("wallet_2")!;
+    const buyAmount = 200;
+    chain.mineBlock([
+      tokenClient.mint(amount, poolOwner),
+      buyMiaClient.sellMia(amount, poolOwner),
+    ]);
+
+    // act
+    const receipt = chain.mineBlock([buyMiaClient.buyMia(buyAmount, user)])
+      .receipts[0];
+
+    // assert
+    receipt.result.expectOk().expectBool(true);
+    assertEquals(receipt.events.length, 2);
+
+    receipt.events.expectFungibleTokenTransferEvent(
+      buyAmount,
+      buyMiaClient.getContractAddress(),
+      user.address,
+      "miamicoin"
+    );
+
+    receipt.events.expectSTXTransferEvent(
+      buyAmount * BuyMiaClient.DEFAULT_PRICE,
+      user.address,
+      poolOwner.address
+    );
+  },
+});

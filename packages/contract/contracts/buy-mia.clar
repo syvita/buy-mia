@@ -28,12 +28,13 @@
 )
 
 (define-public (buy-mia (amount uint))
-    (begin
+    (let
+        ((user contract-caller))
         (asserts! (not (is-auth-pool)) (err ERR_UNAUTHORIZED))
         ;; transfer stx to deployer
-        (try! (as-contract (stx-transfer? (* amount (var-get price)) contract-caller POOL_ADDRESS)))
+        (try! (stx-transfer? (* amount (var-get price)) user POOL_ADDRESS))
         ;; send MIA to caller
-        (try! (transfer-mia amount (as-contract tx-sender) contract-caller))
+        (try! (as-contract (transfer-mia amount CONTRACT_ADDRESS user)))
         (ok true)
     )
 )
