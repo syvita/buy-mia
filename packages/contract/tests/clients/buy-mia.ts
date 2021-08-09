@@ -35,4 +35,17 @@ export class BuyMiaClient extends BaseClient {
       sender.address
     );
   }
+
+  changePrice(newPrice: number, sender: Account) {
+    return Tx.contractCall(
+      this.contractName,
+      "change-price",
+      [types.uint(newPrice)],
+      sender.address
+    );
+  }
+
+  getPrice() {
+    return this.callReadOnlyFn("get-price").result
+  }
 }

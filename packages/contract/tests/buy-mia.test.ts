@@ -162,3 +162,76 @@ Clarinet.test({
     );
   },
 });
+
+Clarinet.test({
+  name: "Changing price fails with ERR_UNAUTHORIZED when called by someone who is not POOL owner",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const { tokenClient, buyMiaClient } = createClients(chain, accounts);
+    const user = accounts.get("wallet_2")!;
+    const newPrice = 20;
+
+    // act
+    const receipt = chain.mineBlock([buyMiaClient.changePrice(newPrice, user)])
+      .receipts[0];
+
+    // assert
+    receipt.result.expectErr().expectUint(BuyMiaClient.Err.ERR_UNAUTHORIZED);
+  },
+});
+
+Clarinet.test({
+  name: "Changing price succeeds and saves new price when called by POOL owner",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const { tokenClient, buyMiaClient } = createClients(chain, accounts);
+    const poolOwner = accounts.get("wallet_1")!;
+    const newPrice = 20;
+    buyMiaClient.getPrice().expectOk().expectUint(BuyMiaClient.DEFAULT_PRICE);
+
+    // act
+    const receipt = chain.mineBlock([
+      buyMiaClient.changePrice(newPrice, poolOwner),
+    ]).receipts[0];
+
+    // assert
+    receipt.result.expectOk().expectBool(true);
+    buyMiaClient.getPrice().expectOk().expectUint(newPrice);
+  },
+});
+
+Clarinet.test({
+  name: "Price changed by POOL owner is used while selling tokens to user",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const { tokenClient, buyMiaClient } = createClients(chain, accounts);
+    const poolOwner = accounts.get("wallet_1")!;
+    const amount = 100000;
+    const newPrice = 20;
+    const user = accounts.get("wallet_2")!;
+    const buyAmount = 5000;
+    chain.mineBlock([
+      tokenClient.mint(amount, poolOwner),
+      buyMiaClient.sellMia(amount, poolOwner),
+      buyMiaClient.changePrice(newPrice, poolOwner),
+    ]);
+
+    // act
+    const receipt = chain.mineBlock([buyMiaClient.buyMia(buyAmount, user)])
+      .receipts[0];
+
+    // assert
+    receipt.result.expectOk().expectBool(true);
+    assertEquals(receipt.events.length, 2);
+
+    receipt.events.expectSTXTransferEvent(
+      buyAmount * newPrice,
+      user.address,
+      poolOwner.address
+    );
+
+    receipt.events.expectFungibleTokenTransferEvent(
+      buyAmount,
+      buyMiaClient.getContractAddress(),
+      user.address,
+      "miamicoin"
+    );
+  },
+});
