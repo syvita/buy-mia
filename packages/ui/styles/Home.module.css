@@ -32,6 +32,11 @@
   transition: 200ms;
 }
 
+.button:active {
+  opacity: 0.7;
+  transition: 200ms;
+}
+
 .buy h1 {
   font-weight: normal;
 }
@@ -86,6 +91,11 @@
 
 .signOut:hover {
   opacity: 0.8;
+  transition: 200ms;
+}
+
+.signOut:active {
+  opacity: 0.7;
   transition: 200ms;
 }
 
