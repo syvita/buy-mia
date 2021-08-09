@@ -39,7 +39,7 @@ export default function Home() {
   const NETWORK = new StacksMainnet();
   const GENESIS_CONTRACT_ADDRESS = "SP000000000000000000002Q6VF78";
   const CONTRACT_ADDRESS = "SP343J7DNE122AVCSC4HEK4MF871PW470ZSXJ5K66";
-  const CONTRACT_NAME = "buy-mia-v4";
+  const CONTRACT_NAME = "buy-mia-v5";
 
   async function buyMIA() {
     await doContractCall({
