@@ -5,7 +5,6 @@
 (define-constant POOL_ADDRESS 'SP2F8X5AT0726E8B7GGXDADHD53ARM5927SJN3TQ6)
 
 (define-constant ERR_UNAUTHORIZED u1)
-
 (define-data-var price uint u15000) ;; price in uSTX for 1 MIA
 
 (define-public (sell-mia (amount uint))
@@ -21,7 +20,7 @@
     (begin 
         (asserts! (is-auth-pool) (err ERR_UNAUTHORIZED))
         ;; send MIA to caller
-        (try! (transfer-mia amount (as-contract tx-sender) contract-caller))
+        (try! (as-contract (transfer-mia amount (as-contract tx-sender) contract-caller)))
         (ok true)
     )
 )
@@ -30,7 +29,7 @@
     (begin
         (asserts! (not (is-auth-pool)) (err ERR_UNAUTHORIZED))
         ;; transfer stx to deployer
-        (try! (stx-transfer? (* amount (var-get price)) contract-caller POOL_ADDRESS))
+        (try! (as-contract (stx-transfer? (* amount (var-get price)) contract-caller POOL_ADDRESS)))
         ;; send MIA to caller
         (try! (transfer-mia amount (as-contract tx-sender) contract-caller))
         (ok true)
@@ -67,7 +66,7 @@
 )
 
 (define-private (is-auth-pool)
-  (is-eq contract-caller POOL_ADDRESS) (err ERR_UNAUTHORIZED)
+  (is-eq contract-caller POOL_ADDRESS)
 )
 
 (define-private (transfer-mia (amount uint) (from principal) (to principal))
