@@ -27,6 +27,11 @@
   height: 48px;
 }
 
+.button:hover {
+  opacity: 0.8;
+  transition: 200ms;
+}
+
 .buy h1 {
   font-weight: normal;
 }
@@ -77,6 +82,11 @@
   border-radius: 10px;
   width: 150px;
   height: 48px;
+}
+
+.signOut:hover {
+  opacity: 0.8;
+  transition: 200ms;
 }
 
 .total {
