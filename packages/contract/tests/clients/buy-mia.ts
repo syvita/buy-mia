@@ -16,4 +16,13 @@ export class BuyMiaClient extends BaseClient {
       sender.address
     );
   }
+
+  exitMia(amount: number, sender: Account) {
+    return Tx.contractCall(
+      this.contractName,
+      "exit-mia",
+      [types.uint(amount)],
+      sender.address
+    );
+  }
 }

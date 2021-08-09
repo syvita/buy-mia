@@ -4,6 +4,8 @@
 ;; REPLACE ME WITH: (define-constant POOL_ADDRESS 'SP2F8X5AT0726E8B7GGXDADHD53ARM5927SJN3TQ6)
 (define-constant POOL_ADDRESS 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5)
 
+(define-constant CONTRACT_ADDRESS (as-contract tx-sender))
+
 (define-constant ERR_UNAUTHORIZED u1000)
 (define-data-var price uint u15000) ;; price in uSTX for 1 MIA
 
@@ -19,8 +21,8 @@
 (define-public (exit-mia (amount uint))
     (begin 
         (asserts! (is-auth-pool) (err ERR_UNAUTHORIZED))
-        ;; send MIA to caller
-        (try! (as-contract (transfer-mia amount (as-contract tx-sender) contract-caller)))
+        ;; send MIA to POOL owner address
+        (try! (as-contract (transfer-mia amount CONTRACT_ADDRESS POOL_ADDRESS)))
         (ok true)
     )
 )

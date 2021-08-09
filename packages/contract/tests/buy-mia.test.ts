@@ -56,3 +56,52 @@ Clarinet.test({
     assertEquals(receipt.events.length, 0);
   },
 });
+
+Clarinet.test({
+  name: "Withdrawing tokens from contract fails with ERR_UNAUTHORIZED when called by someone who is not pool owner",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const { tokenClient, buyMiaClient } = createClients(chain, accounts);
+    const poolOwner = accounts.get("wallet_1")!;
+    const user = accounts.get("wallet_2")!;
+    const amount = 1023123;
+    chain.mineBlock([
+      tokenClient.mint(amount, poolOwner),
+      buyMiaClient.sellMia(amount, poolOwner),
+    ]);
+
+    // act
+    const receipt = chain.mineBlock([buyMiaClient.exitMia(amount, user)])
+      .receipts[0];
+
+    // assert
+    receipt.result.expectErr().expectUint(BuyMiaClient.Err.ERR_UNAUTHORIZED);
+    assertEquals(receipt.events.length, 0);
+  },
+});
+
+Clarinet.test({
+  name: "Withdrawing tokens from contract succeeds and cause FT Transfer Event when called by POOL owner",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const { tokenClient, buyMiaClient } = createClients(chain, accounts);
+    const user = accounts.get("wallet_1")!;
+    const amount = 1023123;
+    chain.mineBlock([
+      tokenClient.mint(amount, user),
+      buyMiaClient.sellMia(amount, user),
+    ]);
+
+    // act
+    const receipt = chain.mineBlock([buyMiaClient.exitMia(amount, user)])
+      .receipts[0];
+
+    // assert
+    receipt.result.expectOk().expectBool(true);
+    assertEquals(receipt.events.length, 1);
+    receipt.events.expectFungibleTokenTransferEvent(
+      amount,
+      buyMiaClient.getContractAddress(),
+      user.address,
+      "miamicoin"
+    );
+  },
+});
