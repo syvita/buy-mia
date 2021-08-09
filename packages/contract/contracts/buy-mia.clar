@@ -1,7 +1,7 @@
 ;; contract written by Asteria of Syvita
 ;; rights to this contract are reserved for the Syvita Guild
 
-(define-constant MIAMICOIN_TOKEN 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token)
+;; (define-constant MIAMICOIN_TOKEN 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token)
 (define-constant POOL_ADDRESS 'SP2F8X5AT0726E8B7GGXDADHD53ARM5927SJN3TQ6)
 
 (define-constant ERR_UNAUTHORIZED u1)
@@ -50,7 +50,8 @@
 )
 
 (define-read-only (get-remaining)
-    (ok (contract-call? 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token get-balance (as-contract tx-sender)))
+    ;; REPLACE ME WITH: (ok (contract-call? 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token get-balance (as-contract tx-sender)))
+    (ok (contract-call? .miamicoin-token get-balance (as-contract tx-sender)))
 )
 
 (define-read-only (get-contract-stx-balance)
@@ -58,7 +59,8 @@
 )
 
 (define-read-only (get-pool-mia-balance)
-  (contract-call? 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token get-balance POOL_ADDRESS)
+  ;; REPLACE ME WITH: (contract-call? 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token get-balance POOL_ADDRESS)
+  (contract-call? .miamicoin-token get-balance POOL_ADDRESS)
 )
 
 (define-read-only (get-pool-stx-balance)
@@ -70,9 +72,11 @@
 )
 
 (define-private (transfer-mia (amount uint) (from principal) (to principal))
-    (contract-call? 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token transfer amount from to none)
+    ;; REPLACE ME WITH: (contract-call? 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token transfer amount from to none)
+    (contract-call? .miamicoin-token transfer amount from to none)
 )
 
 (define-private (get-balance (user principal))
-    (contract-call? 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token get-balance user)
+    ;; REPLACE ME WITH: (contract-call? 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token get-balance user)
+    (contract-call? .miamicoin-token get-balance user)
 )

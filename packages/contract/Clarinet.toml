@@ -2,8 +2,12 @@
 [project]
 name = "contract"
 
+[contracts.miamicoin-token]
+path = "contracts/miamicoin-token-mock.clar"
+depends_on = []
+
 [contracts.buy-mia]
 path = "contracts/buy-mia.clar"
-depends_on = []
+depends_on = ["miamicoin-token"]
 
 [notebooks]
