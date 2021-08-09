@@ -13,7 +13,7 @@
     (begin
         (asserts! (is-auth-pool) (err ERR_UNAUTHORIZED))
         ;; send MIA to contract
-        (try! (transfer-mia amount contract-caller (as-contract tx-sender)))
+        (try! (transfer-mia amount contract-caller CONTRACT_ADDRESS))
         (ok true)
     )
 )
@@ -54,11 +54,11 @@
 
 (define-read-only (get-remaining)
     ;; REPLACE ME WITH: (ok (contract-call? 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token get-balance (as-contract tx-sender)))
-    (ok (contract-call? .miamicoin-token get-balance (as-contract tx-sender)))
+    (ok (contract-call? .miamicoin-token get-balance CONTRACT_ADDRESS))
 )
 
 (define-read-only (get-contract-stx-balance)
-  (stx-get-balance (as-contract tx-sender))
+  (stx-get-balance CONTRACT_ADDRESS)
 )
 
 (define-read-only (get-pool-mia-balance)
