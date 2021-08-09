@@ -21,6 +21,7 @@ export default function Home() {
   const [price, setPrice] = useState();
   const [remaining, setRemaining] = useState();
   const [txId, setTxId] = useState();
+  const [nonce, setNonce] = useState();
 
   useEffect(() => {
     getPrice().then((result) => setPrice(result));
@@ -31,7 +32,6 @@ export default function Home() {
 
   if (userSession.isUserSignedIn()) {
     STXAddress = userSession.loadUserData().profile.stxAddress.mainnet;
-    console.log(STXAddress);
   }
 
   const { doContractCall } = syConnect();
@@ -39,20 +39,21 @@ export default function Home() {
   const NETWORK = new StacksMainnet();
   const GENESIS_CONTRACT_ADDRESS = "SP000000000000000000002Q6VF78";
   const CONTRACT_ADDRESS = "SP343J7DNE122AVCSC4HEK4MF871PW470ZSXJ5K66";
-  const CONTRACT_NAME = "buy-mia-v1";
+  const CONTRACT_NAME = "buy-mia-v3";
 
-  async function buyMIA() {
+  async function sellMIA() {
     await doContractCall({
       contractAddress: CONTRACT_ADDRESS,
       contractName: CONTRACT_NAME,
-      functionName: "buy-mia",
+      functionName: "sell-mia",
       functionArgs: [uintCV(amount)],
       postConditionMode: PostConditionMode.Deny,
+      nonce: nonce,
       postConditions: [
         makeStandardSTXPostCondition(
           STXAddress,
           FungibleConditionCode.Equal,
-          uintCV(amount * price).value
+          uintCV(amount).value
         ),
       ],
       network: NETWORK,
@@ -83,7 +84,7 @@ export default function Home() {
       network: NETWORK,
       senderAddress: GENESIS_CONTRACT_ADDRESS,
     });
-    return parseInt(result.value.value);
+    return parseInt(result.value.value.value);
   }
 
   return (
@@ -95,6 +96,10 @@ export default function Home() {
         {userSession.isUserSignedIn() && (
           <>
             <input onChange={(e) => setAmount(e.target.value)}></input>
+            <input
+              placeholder="Nonce"
+              onChange={(e) => setNonce(e.target.value)}
+            ></input>
             <label className={styles.number}>Number of MiamiCoin</label>
             <label className={styles.total}>
               {(amount * (price / 1000000)).toFixed(2)} STX
@@ -103,8 +108,8 @@ export default function Home() {
               <img src="/eye.svg" height="14" width="16" alt="Eye"></img>
               {price / 1000000} STX/MIA | {remaining} MIA left
             </div>
-            <button onClick={buyMIA} className={styles.button}>
-              Buy
+            <button onClick={sellMIA} className={styles.button}>
+              Sell
             </button>
             <button className={styles.signOut} onClick={handleSignOut}>
               Sign Out
