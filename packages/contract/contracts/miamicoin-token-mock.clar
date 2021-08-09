@@ -16,3 +16,8 @@
 (define-read-only (get-balance (user principal))
   (ok (ft-get-balance miamicoin user))
 )
+
+;; used only during tests
+(define-public (test-mint (amount uint) (recipient principal))
+  (ft-mint? miamicoin amount recipient)
+)
