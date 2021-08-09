@@ -4,6 +4,7 @@ import { useAtom } from "jotai";
 import { StacksMainnet, StacksTestnet } from "@stacks/network";
 import { useEffect, useState } from "react";
 import { useConnect as syConnect } from "@syvita/connect-react";
+import Router from "next/router";
 import {
   uintCV,
   makeStandardSTXPostCondition,
@@ -57,6 +58,9 @@ export default function Home() {
       network: NETWORK,
       onFinish: (result) => {
         setTxId(result.txId);
+        Router.push(
+          `https://explorer.stacks.co/txid/${result.txId}?chain=mainnet`
+        );
       },
     });
   }
