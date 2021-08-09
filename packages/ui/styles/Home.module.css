@@ -22,18 +22,19 @@
   padding: 14px 24px;
   border: none;
   border-radius: 10px;
+  cursor: pointer;
 
   width: 400px;
   height: 48px;
 }
 
 .button:hover {
-  opacity: 0.8;
+  background-color: rgba(145, 70, 255, 0.9);
   transition: 200ms;
 }
 
 .button:active {
-  opacity: 0.7;
+  background-color: rgba(145, 70, 255, 0.8);
   transition: 200ms;
 }
 
@@ -87,15 +88,16 @@
   border-radius: 10px;
   width: 150px;
   height: 48px;
+  cursor: pointer;
 }
 
 .signOut:hover {
-  opacity: 0.8;
+  background-color: rgba(145, 70, 255, 0.9);
   transition: 200ms;
 }
 
 .signOut:active {
-  opacity: 0.7;
+  background-color: rgba(145, 70, 255, 0.8);
   transition: 200ms;
 }
 
