@@ -1,10 +1,10 @@
 ;; contract written by Asteria of Syvita
 ;; rights to this contract are reserved for the Syvita Guild
 
-;; (define-constant MIAMICOIN_TOKEN 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token)
-(define-constant POOL_ADDRESS 'SP2F8X5AT0726E8B7GGXDADHD53ARM5927SJN3TQ6)
+;; REPLACE ME WITH: (define-constant POOL_ADDRESS 'SP2F8X5AT0726E8B7GGXDADHD53ARM5927SJN3TQ6)
+(define-constant POOL_ADDRESS 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5)
 
-(define-constant ERR_UNAUTHORIZED u1)
+(define-constant ERR_UNAUTHORIZED u1000)
 (define-data-var price uint u15000) ;; price in uSTX for 1 MIA
 
 (define-public (sell-mia (amount uint))
