@@ -1,11 +1,16 @@
 @import url("https://x.syvita.org/fonts/roobert/importme.css");
 
-html,
+html {
+}
 body {
+  background: url(/shapes.svg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
   background-color: black;
   color: white;
-  padding: 0;
-  margin: 0;
   font-family: roobert;
 }
 

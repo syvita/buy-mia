@@ -4,7 +4,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  margin-top: 100px;
+  min-width: 250px;
 }
 
 .button {
@@ -22,6 +23,16 @@
   height: 48px;
 }
 
+.buy h1 {
+  font-weight: normal;
+}
+
+.swap {
+  font-weight: normal;
+  margin-left: 35px;
+  margin-top: 10px;
+}
+
 .buy input {
   color: white;
   border: 2px solid #333333;
@@ -29,14 +40,21 @@
   background-color: black;
   width: 400px;
   height: 64px;
+  outline: 0px;
+  font-size: larger;
+  padding-top: 20px;
+  padding-left: 17.5px;
 }
 
 .buy div {
   margin-top: 10px;
+  margin-right: 190px;
   color: #9a9a9a;
 }
 
 .buy div img {
+  position: relative;
+  top: 1.6px;
   filter: invert(1);
   margin-right: 5px;
 }
@@ -54,4 +72,21 @@
   border-radius: 10px;
   width: 150px;
   height: 48px;
+}
+
+.total {
+  color: #9a9a9a;
+  position: absolute;
+  margin-top: 75px;
+  margin-left: 290px;
+  font-size: large;
+  max-width: 100px;
+}
+
+.number {
+  color: #9a9a9a;
+  position: absolute;
+  font-size: small;
+  margin-top: 30px;
+  margin-right: 235px;
 }

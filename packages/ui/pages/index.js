@@ -17,7 +17,7 @@ export default function Home() {
   const { handleSignOut } = useConnect();
   const [userSession] = useAtom(userSessionState);
 
-  const [amount, setAmount] = useState();
+  const [amount, setAmount] = useState(0);
   const [price, setPrice] = useState();
   const [remaining, setRemaining] = useState();
   const [txId, setTxId] = useState();
@@ -87,44 +87,52 @@ export default function Home() {
   }
 
   return (
-    <div className={styles.buy}>
-      <img src="/mia.svg" height="64" width="64" alt="MIA Logo"></img>
-      <h1>Buy $MIA from Syvita</h1>
-      {userSession.isUserSignedIn() && (
-        <input
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder="Number of MiamiCoin"
-        ></input>
-      )}
-      <div>
-        <img src="/eye.svg" height="14" width="14" alt="Eye"></img>
-        {price / 1000000} STX/MIA | {remaining} MIA left
-      </div>
-      {userSession.isUserSignedIn() && (
-        <button onClick={buyMIA} className={styles.button}>
-          Buy
-        </button>
-      )}
-      {txId && (
-        <a
-          href={`https://explorer.stacks.co/txid/${txId}?chain=mainnet`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View in Explorer
-        </a>
-      )}
-      {!userSession.isUserSignedIn() && (
-        <button className={styles.button} onClick={handleOpenAuth}>
-          Connect Wallet
-        </button>
-      )}
+    <>
+      <h1 className={styles.swap}>Swap</h1>
+      <div className={styles.buy}>
+        <img src="/mia.svg" height="64" width="64" alt="MIA Logo"></img>
+        <h1>Buy $MIA from Syvita</h1>
+        {userSession.isUserSignedIn() && (
+          <>
+            <input onChange={(e) => setAmount(e.target.value)}></input>
+            <label className={styles.number}>Number of MiamiCoin</label>
+            <label className={styles.total}>
+              {(amount * (price / 1000000)).toFixed(2)} STX
+            </label>
+            <div>
+              <img src="/eye.svg" height="14" width="16" alt="Eye"></img>
+              {price / 1000000} STX/MIA | {remaining} MIA left
+            </div>
+            <button onClick={buyMIA} className={styles.button}>
+              Buy
+            </button>
+            <button className={styles.signOut} onClick={handleSignOut}>
+              Sign Out
+            </button>
+          </>
+        )}
 
-      {userSession.isUserSignedIn() && (
-        <button className={styles.signOut} onClick={handleSignOut}>
-          Sign Out
-        </button>
-      )}
-    </div>
+        {txId && (
+          <a
+            href={`https://explorer.stacks.co/txid/${txId}?chain=mainnet`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View in Explorer
+          </a>
+        )}
+        {!userSession.isUserSignedIn() && (
+          <>
+            <div>
+              <img src="/eye.svg" height="14" width="14" alt="Eye"></img>
+              {price / 1000000} STX/MIA | {remaining} MIA left
+            </div>
+            <button className={styles.button} onClick={handleOpenAuth}>
+              Connect Wallet
+            </button>
+          </>
+        )}
+      </div>
+    </>
   );
 }
