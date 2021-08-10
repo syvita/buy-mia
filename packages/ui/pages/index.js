@@ -1,10 +1,11 @@
 import styles from "../styles/Home.module.css";
 import { useConnect, userSessionState } from "../lib/auth";
 import { useAtom } from "jotai";
-import { StacksMainnet, StacksTestnet } from "@stacks/network";
+import { StacksMainnet } from "@stacks/network";
 import { useEffect, useState } from "react";
 import { useConnect as syConnect } from "@syvita/connect-react";
-import Router from "next/router";
+import Transaction from "../components/Transaction";
+
 import {
   uintCV,
   makeStandardSTXPostCondition,
@@ -53,9 +54,6 @@ export default function Home() {
       network: NETWORK,
       onFinish: (result) => {
         setTxId(result.txId);
-        Router.push(
-          `https://explorer.stacks.co/txid/${result.txId}?chain=mainnet`
-        );
       },
     });
   }
@@ -84,7 +82,9 @@ export default function Home() {
     return parseInt(result.value.value.value);
   }
 
-  return (
+  return txId ? (
+    <Transaction txId={txId} />
+  ) : (
     <>
       <h1 className={styles.swap}>Swap</h1>
       <div className={styles.buy}>
@@ -108,16 +108,6 @@ export default function Home() {
               Sign Out
             </button>
           </>
-        )}
-
-        {txId && (
-          <a
-            href={`https://explorer.stacks.co/txid/${txId}?chain=mainnet`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View in Explorer
-          </a>
         )}
         {!userSession.isUserSignedIn() && (
           <>
