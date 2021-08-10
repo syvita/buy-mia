@@ -49,24 +49,7 @@ export default function Home() {
       contractName: CONTRACT_NAME,
       functionName: "buy-mia",
       functionArgs: [uintCV(amount)],
-      postConditionMode: PostConditionMode.Deny,
-      postConditions: [
-        makeStandardSTXPostCondition(
-          STXAddress,
-          FungibleConditionCode.Equal,
-          uintCV(amount * price).value
-        ),
-        makeStandardFungiblePostCondition(
-          CONTRACT_ADDRESS,
-          FungibleConditionCode.Equal,
-          uintCV(amount).value,
-          createAssetInfo(
-            "SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27",
-            "miamicoin-token",
-            "miamicoin"
-          )
-        ),
-      ],
+      postConditionMode: PostConditionMode.Allow,
       network: NETWORK,
       onFinish: (result) => {
         setTxId(result.txId);
