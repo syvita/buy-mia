@@ -123,7 +123,7 @@ export default function Home() {
           <>
             <div>
               <img src="/eye.svg" height="14" width="14" alt="Eye"></img>
-              {price / 1000000} STX/MIA |{remaining} MIA left
+              {price / 1000000} STX/MIA | {remaining} MIA left
             </div>
             <button className={styles.button} onClick={handleOpenAuth}>
               Connect Wallet
