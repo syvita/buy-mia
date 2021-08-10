@@ -1,4 +1,5 @@
 @import url("https://x.syvita.org/fonts/roobert/importme.css");
+@import url("https://x.syvita.org/fonts/inter/importme.css");
 
 .buy {
   color: white;
@@ -11,8 +12,8 @@
 }
 
 .button {
-  font-family: roobert;
-  font-weight: bold;
+  font-family: Inter;
+  font-weight: 600;
   margin-top: 10px;
   text-transform: uppercase;
   padding: 14px 26px;
@@ -75,8 +76,8 @@
 }
 
 .signOut {
-  font-family: roobert;
-  font-weight: bold;
+  font-family: Inter;
+  font-weight: 600;
   position: absolute;
   bottom: 100px;
   text-transform: uppercase;
