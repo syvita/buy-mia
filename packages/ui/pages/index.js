@@ -22,12 +22,12 @@ export default function Home() {
 
   const [amount, setAmount] = useState(0);
   const [price, setPrice] = useState();
-  const [remaining, setRemaining] = useState();
+  const [remaining, setRemaining] = useState(0);
   const [txId, setTxId] = useState();
 
   useEffect(() => {
     getPrice().then((result) => setPrice(result));
-    getRemaining().then((result) => setRemaining(result));
+    getRemaining().then((result) => setRemaining(result.toLocaleString()));
   }, []);
 
   let STXAddress = "";
@@ -123,7 +123,7 @@ export default function Home() {
           <>
             <div>
               <img src="/eye.svg" height="14" width="14" alt="Eye"></img>
-              {price / 1000000} STX/MIA | {remaining} MIA left
+              {price / 1000000} STX/MIA |{remaining} MIA left
             </div>
             <button className={styles.button} onClick={handleOpenAuth}>
               Connect Wallet
