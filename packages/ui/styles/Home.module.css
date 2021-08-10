@@ -23,7 +23,7 @@
   border: none;
   border-radius: 10px;
   cursor: pointer;
-
+  transition: 200ms;
   width: 400px;
   height: 48px;
 }
@@ -90,6 +90,7 @@
   width: 150px;
   height: 48px;
   cursor: pointer;
+  transition: 200ms;
 }
 
 .signOut:hover {
