@@ -11,6 +11,8 @@ import {
   PostConditionMode,
   FungibleConditionCode,
   callReadOnlyFunction,
+  makeStandardFungiblePostCondition,
+  createAssetInfo,
 } from "@syvita/transactions";
 
 export default function Home() {
@@ -53,6 +55,16 @@ export default function Home() {
           STXAddress,
           FungibleConditionCode.Equal,
           uintCV(amount * price).value
+        ),
+        makeStandardFungiblePostCondition(
+          CONTRACT_ADDRESS,
+          FungibleConditionCode.Equal,
+          uintCV(amount).value,
+          createAssetInfo(
+            "SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27",
+            "miamicoin-token",
+            "miamicoin"
+          )
         ),
       ],
       network: NETWORK,
