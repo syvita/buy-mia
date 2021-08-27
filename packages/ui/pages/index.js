@@ -14,6 +14,7 @@ import {
   callReadOnlyFunction,
   makeStandardFungiblePostCondition,
   createAssetInfo,
+  makeContractFungiblePostCondition,
 } from "@syvita/transactions";
 
 export default function Home() {
@@ -50,7 +51,25 @@ export default function Home() {
       contractName: CONTRACT_NAME,
       functionName: "buy-mia",
       functionArgs: [uintCV(amount)],
-      postConditionMode: PostConditionMode.Allow,
+      postConditionMode: PostConditionMode.Deny,
+      postConditions: [
+        makeStandardSTXPostCondition(
+          STXAddress,
+          FungibleConditionCode.Equal,
+          uintCV(amount * price).value
+        ),
+        makeContractFungiblePostCondition(
+          CONTRACT_ADDRESS,
+          CONTRACT_NAME,
+          FungibleConditionCode.Equal,
+          uintCV(amount).value,
+          createAssetInfo(
+            "SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27",
+            "miamicoin-token",
+            "miamicoin"
+          )
+        ),
+      ],
       network: NETWORK,
       onFinish: (result) => {
         setTxId(result.txId);
